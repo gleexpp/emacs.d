@@ -34,6 +34,14 @@ DELTA should be a multiple of 10, in the units used by the
 (global-set-key (kbd "C-M-=") 'increase-default-font-height)
 (global-set-key (kbd "C-M--") 'decrease-default-font-height)
 
-
+;设置默认字体
+;; Setting English Font
+(set-face-attribute
+  'default nil :font "YaHei Consolas Hybrid 12")
+;; Chinese Font
+(dolist (charset '(kana han symbol cjk-misc bopomofo))
+    (set-fontset-font (frame-parameter nil 'font)
+                      charset
+                      (font-spec :family "YaHei Consolas Hybrid" :size 14)))
 
 (provide 'init-fonts)
