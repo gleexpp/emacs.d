@@ -13,7 +13,7 @@
       org-fast-tag-selection-single-key 'expert
       org-export-kill-product-buffer-when-displayed t
       org-tags-column 80
-      org-directory "~/CloudSpace.localized/Dropbox/Org")
+      org-directory "~/CloudSpace.localized/Nutstore/Org")
 
 
 ; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
@@ -25,7 +25,7 @@
 
 
 (setq org-todo-keywords
-      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d@/!)")
+      (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d@/!)" "DELEGATED(p@/!)")
               (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE"))))
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
@@ -48,13 +48,13 @@
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, and org-protocol
 (setq org-capture-templates
-      (quote (("t" "todo" entry (file "~/CloudSpace.localized/Dropbox/Org/refile.org")
+      (quote (("t" "todo" entry (file "~/CloudSpace.localized/Nutstore/Org/refile.org")
                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
-              ("n" "note" entry (file "~/CloudSpace.localized/Dropbox/Org/refile.org")
+              ("n" "note" entry (file "~/CloudSpace.localized/Nutstore/Org/refile.org")
                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
-              ("j" "Journal" entry (file+datetree "~/CloudSpace.localized/Dropbox/Org/diary.org")
+              ("j" "Journal" entry (file+datetree "~/CloudSpace.localized/Nutstore/Org/diary.org")
                "* %?\n%U\n" :clock-in t :clock-resume t)
-              ("h" "Habit" entry (file "~/CloudSpace.localized/Dropbox/Org/refile.org")
+              ("h" "Habit" entry (file "~/CloudSpace.localized/Nutstore/Org/refile.org")
                "* NEXT %?\n%U\n%a\nSCHEDULED: %t .+1d/3d\n:PROPERTIES:\n:STYLE: habit\n:REPEAT_TO_STATE: NEXT\n:END:\n"))))
 ;; Remove empty LOGBOOK drawers on clock out
 (defun bh/remove-empty-drawer-on-clock-out ()
@@ -144,9 +144,9 @@
 ;;   )
 
 ;; set agenda files to search
-(setq org-agenda-files (quote ("~/CloudSpace.localized/Dropbox/Org/Personal"
-                               "~/CloudSpace.localized/Dropbox/Org/Work"
-                               "~/CloudSpace.localized/Dropbox/Org/Sanwn")))
+(setq org-agenda-files (quote ("~/CloudSpace.localized/Nutstore/Org/Personal"
+                               "~/CloudSpace.localized/Nutstore/Org/Work"
+                               "~/CloudSpace.localized/Nutstore/Org/Sanwn")))
 
 ;; set up capture location
 (setq org-default-notes-file (concat org-directory "/refile.org"))
