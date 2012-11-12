@@ -21,3 +21,5 @@ cookies
 site-lisp/package/
 /swank
 /.mc-lists.el
+.bookmarks.el
+org-clock-save.el
