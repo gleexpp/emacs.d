@@ -1,3 +1,7 @@
+(require 'gnus-util)
+(require 'org-habit)
+(require 'org-archive)
+
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
 (add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
@@ -35,6 +39,8 @@
               ("HOLD" :foreground "magenta" :weight bold)
               ("CANCELLED" :foreground "forest green" :weight bold)
               ("PHONE" :foreground "forest green" :weight bold))))
+
+(setq-default org-done-keywords (quote ("DONE" "DELEGATE" "CANCELLED")))
 
 ; TODO State triggers
 (setq org-todo-state-tags-triggers
@@ -462,6 +468,32 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
                ((org-agenda-overriding-header "Tasks to Archive")
                 (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
                 (org-tags-match-list-sublevels nil))))))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;    Archive setup                   ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq org-archive-mark-done nil)
+(setq org-archive-location "%s_archive::* Archived Tasks")
+(defun bh/skip-non-archivable-tasks ()
+  "Skip trees that not available for archiving"
+  (save-restriction
+    (widen)
+    (let ((next-headline (save-excursion (or (outline-next-heading) (point-max)))))
+      ;;Consider only tasks with done todo headings as archivable candidates
+      (if (member (org-get-todo-state) org-done-keywords)
+          (let* ((subtree-end (save-excursion (org-end-of-subtree t)))
+                 (daynr (string-to-number (format-time-string "%d" (current-time))))
+                 (a-month-ago (* 60 60 24 (+ daynr 1)))
+                 (last-month (format-time-string "%Y-%m-" (time-subtract (current-time) (seconds-to-time a-month-ago))))
+                 (this-month (format-time-string "%Y-%m-" (current-time)))
+                 (subtree-is-current (save-excursion
+                                       (forward-line 1)
+                                       (and (< (point) subtree-end)
+                                            (re-search-forward (concat last-month "\\|" this-month) subtree-end t)))))
+            (if subtree-is-current
+                next-headline ; Has a date in this month or last month, skip it
+              nil))
+        (or next-headline) (point-max)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;    Clock setup                     ;;
