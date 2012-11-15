@@ -30,7 +30,8 @@
 
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d@/!)" "DELEGATED(p@/!)")
-              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE"))))
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE")
+              (sequence "|" "SOMEDAY"))))
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
               ("NEXT" :foreground "blue" :weight bold)
@@ -47,10 +48,11 @@
       (quote (("CANCELLED" ("CANCELLED" . t))
               ("WAITING" ("WAITING" . t))
               ("HOLD" ("WAITING" . t) ("HOLD" . t))
+              ("SOMEDAY" ("SOMEDAY" . t))
               (done ("WAITING") ("HOLD"))
-              ("TODO" ("WAITING") ("CANCELLED") ("HOLD"))
-              ("NEXT" ("WAITING") ("CANCELLED") ("HOLD"))
-              ("DONE" ("WAITING") ("CANCELLED") ("HOLD")))))
+              ("TODO" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
+              ("NEXT" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
+              ("DONE" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY")))))
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, and org-protocol
 (setq org-capture-templates
@@ -102,8 +104,9 @@
 ; global STYLE property values for completion
 (setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
                                     ("STYLE_ALL" . "habit")
+                                    ("ENERGY_ALL" . "low normal high")
                                     ("CATEGORY_ALL" . "Mind Finance Fun Health Career Relationship Emotion")
-                                    ("Trustee_ALL" . "刘启良 林昆 叶海 王鹏 雷怡静 胡中夏"))))
+                                    ("DELEGATE_ALL" . "刘启良 林昆 叶海 王鹏 雷怡静 胡中夏"))))
 
 
 ;; Save the running clock and all clock history when exiting Emacs, load it on startup
@@ -402,7 +405,7 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
                        (org-tags-match-list-sublevels nil)))
                 (tags-todo "-CANCELLED/!"
                            ((org-agenda-overriding-header "Stuck Projects")
-                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)))
+                            (org-agenda-skip-function 'bh/skip-non-stuck-projects)))                
                 (tags-todo "-WAITING-CANCELLED/!NEXT"
                            ((org-agenda-overriding-header "Next Tasks")
                             (org-agenda-skip-function 'bh/skip-projects-and-habits-and-single-tasks)
@@ -425,6 +428,9 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
                             (org-agenda-skip-function 'bh/skip-non-projects)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
+                (tags "SOMEDAY"
+                           ((org-agenda-overriding-header "Someday/Maybe")
+                            (org-tags-match-list-sublevels nil)))
                 (tags-todo "-CANCELLED+WAITING/!"
                            ((org-agenda-overriding-header "Waiting and Postponed Tasks")
                             (org-agenda-skip-function 'bh/skip-stuck-projects)
