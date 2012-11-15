@@ -5,7 +5,20 @@
 
 (add-hook 'ibuffer-hook 'ibuffer-set-up-preferred-filters)
 
-
+(setq ibuffer-saved-filter-groups
+      (quote (("default"
+               ("Org" ;;all org-mode related buffers
+                (mode . org-mode))
+               ("Mousika"
+                (filename . "~/Projects.localized/Sanwn/Mousika"))
+               ("Phoenix"
+                (filename . "~/Projects.localized/Sanwn/Phoenix"))
+               ("Jade"
+                (filename . "~/Projects.localized/Work/jade"))
+               ))))
+(add-hook 'ibuffer-mode-hook
+          (lambda ()
+            (ibuffer-switch-to-saved-filter-groups "default")))
 
 (eval-after-load 'ibuffer
   '(progn
