@@ -17,6 +17,7 @@
       org-fast-tag-selection-single-key 'expert
       org-export-kill-product-buffer-when-displayed t
       org-tags-column 80
+      org-enforce-todo-dependencies t
       org-directory "~/CloudSpace.localized/Nutstore/Org")
 
 
