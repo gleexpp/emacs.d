@@ -54,6 +54,7 @@
 (require 'init-sh)
 (require 'init-php)
 (require 'init-org)
+(require 'init-org-latex)
 (require 'init-nxml)
 (require 'init-css)
 (require 'init-haml)
@@ -66,6 +67,8 @@
 (require 'init-slime)
 (require 'init-clojure)
 (require 'init-common-lisp)
+
+(require 'init-evernote)
 
 (when *spell-check-support-enabled*
   (require 'init-spelling))
