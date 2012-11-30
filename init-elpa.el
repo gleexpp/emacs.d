@@ -159,6 +159,10 @@ ARCHIVE is the string name of the package archive.")
 (require-package 'darcsum)
 (require-package 'pretty-mode)
 
+;; my own addition
+(require-package 'evil)
+(require-package 'evernote-mode)
+
 ;; I maintain this chunk:
 (require-package 'ac-slime)
 (require-package 'ac-nrepl)
