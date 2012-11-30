@@ -4,21 +4,26 @@
 
 (define-key global-map "\C-cl" 'org-store-link)
 (define-key global-map "\C-ca" 'org-agenda)
-(add-to-list 'auto-mode-alist '("\\.org$" . org-mode))
+(add-to-list 'auto-mode-alist '("\\.\\(org\\|org_archive\\)$" . org-mode))
 
 ;; Various preferences
 (setq org-log-done t
       org-completion-use-ido t
       org-edit-timestamp-down-means-later t
-      org-agenda-start-on-weekday nil
-      org-agenda-span 14
+      org-agenda-start-on-weekday 1
+      org-agenda-span 'day
       org-agenda-include-diary t
       org-agenda-window-setup 'current-window
       org-fast-tag-selection-single-key 'expert
       org-export-kill-product-buffer-when-displayed t
       org-tags-column 80
       org-enforce-todo-dependencies t
-      org-directory "~/CloudSpace.localized/Nutstore/Org")
+      org-agenda-tags-todo-honor-ignore-options t ; For tag searches ignore tasks with scheduled and deadline dates
+      org-directory "~/CloudSpace.localized/Nutstore/Org"
+      org-agenda-files'("~/CloudSpace.localized/Nutstore/Org" ;; set agenda files to search
+                        "~/CloudSpace.localized/Nutstore/Org/Work"
+                        "~/CloudSpace.localized/Nutstore/Org/Sanwn"
+                        "~/CloudSpace.localized/Nutstore/Org/Personal"))
 
 
 ; Refile targets include this file and any file contributing to the agenda - up to 5 levels deep
@@ -31,8 +36,9 @@
 
 (setq org-todo-keywords
       (quote ((sequence "TODO(t)" "NEXT(n)" "|" "DONE(d@/!)" "DELEGATED(p@/!)")
-              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE")
-              (sequence "|" "SOMEDAY"))))
+              (sequence "WAITING(w@/!)" "HOLD(h@/!)" "|" "CANCELLED(c@/!)" "PHONE(p)")
+              (sequencep "TOREAD(o)" "READING(r)" "REVIEW(e)" "|" "READ(R)")
+              (sequence "|" "SOMEDAY(s)"))))
 (setq org-todo-keyword-faces
       (quote (("TODO" :foreground "red" :weight bold)
               ("NEXT" :foreground "blue" :weight bold)
@@ -100,13 +106,31 @@
 
 (setq org-refile-target-verify-function 'bh/verify-refile-target)
 
-(setq org-tag-alist '(("@office" . ?o) ("@home" . ?h) ("laptop" . ?l) ("iPad" . ?i)))
+(setq org-tag-alist '((:startgroup)
+                      ("@office" . ?o)
+                      ("@home" . ?h)
+                      ("@trip" . ?t)
+                      (:endgroup)
+                      ("PHONE" . ?p)
+                      ("WAITING" . ?w)
+                      ("HOLD" . ?H)
+                      ("CANCELLED" . ?c)
+                      ("READING" . ?r)
+                      ("RESEARCH" . ?R)
+                      ("WORK" . ?W)
+                      ("DEVELOPMENT" . ?D)
+                      ("PERSONAL" . ?P)
+                      ("DAUGHTER" . ?d)
+                      ("FAMILY" . ?f)
+                      ("FUN" . ?F)
+                      ("HEALTH" . ?e)
+                      ("SANWN" . ?s)))
 ; global Effort estimate values
 ; global STYLE property values for completion
 (setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
                                     ("STYLE_ALL" . "habit")
                                     ("ENERGY_ALL" . "low normal high")
-                                    ("CATEGORY_ALL" . "Mind Finance Fun Health Career Relationship Emotion")
+                                    ("CATEGORY_ALL" . "Mind Finance Fun Health Career Relationship Emotion Maintenance")
                                     ("DELEGATE_ALL" . "刘启良 林昆 叶海 王鹏 雷怡静 胡中夏"))))
 
 
@@ -152,11 +176,6 @@
 ;;                   (re-search-backward "^[0-9]+:[0-9]+-[0-9]+:[0-9]+ " nil t))
 ;;                 (insert (match-string 0)))))
 ;;   )
-
-;; set agenda files to search
-(setq org-agenda-files (quote ("~/CloudSpace.localized/Nutstore/Org/Personal"
-                               "~/CloudSpace.localized/Nutstore/Org/Work"
-                               "~/CloudSpace.localized/Nutstore/Org/Sanwn")))
 
 ;; set up capture location
 (setq org-default-notes-file (concat org-directory "/refile.org"))
@@ -416,7 +435,7 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
                             (org-tags-match-list-sublevels t)
                             (org-agenda-sorting-strategy
                              '(todo-state-down effort-up category-keep))))
-                (tags-todo "-REFILE-CANCELLED/!-HOLD-WAITING"
+                (tags-todo "-REFILE-CANCELLED/!-HOLD-WAITING-TOREAD-READING-REVIEW"
                            ((org-agenda-overriding-header "Tasks")
                             (org-agenda-skip-function 'bh/skip-project-tasks-maybe)
                             (org-agenda-todo-ignore-scheduled t)
@@ -429,6 +448,15 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
                             (org-agenda-skip-function 'bh/skip-non-projects)
                             (org-agenda-sorting-strategy
                              '(category-keep))))
+                (tags-todo "/!READING"
+                           ((org-agenda-overriding-header "Reading Books")
+                            (org-tags-match-list-sublevels nil)))
+                (tags-todo "/!TOREAD"
+                           ((org-agenda-overriding-header "Books to Read")
+                            (org-tags-match-list-sublevels nil)))
+                (tags-todo "/!REVIEW"
+                           ((org-agenda-overriding-header "Books to Review")
+                            (org-tags-match-list-sublevels nil)))
                 (tags "SOMEDAY"
                            ((org-agenda-overriding-header "Someday/Maybe")
                             (org-tags-match-list-sublevels nil)))
@@ -471,6 +499,12 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
               ("w" "Waiting Tasks" tags-todo "-CANCELLED+WAITING/!"
                ((org-agenda-overriding-header "Waiting and Postponed tasks"))
                (org-tags-match-list-sublevels nil))
+              ("s" "Someday/Maybe" tags "SOMEDAY"
+               ((org-agenda-overriding-header "Someday/Maybe tasks")
+                (org-tags-match-list-sublevels nil)))
+              ("b" "Reading Books" tags-todo "/!READING"
+               ((org-agenda-overriding-header "Books Being Read")
+                (org-tags-match-list-sublevels nil)))
               ("A" "Tasks to Archive" tags "-REFILE/"
                ((org-agenda-overriding-header "Tasks to Archive")
                 (org-agenda-skip-function 'bh/skip-non-archivable-tasks)
