@@ -59,11 +59,15 @@
               (done ("WAITING") ("HOLD"))
               ("TODO" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
               ("NEXT" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
-              ("DONE" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY")))))
+              ("DONE" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
+              ("TOREAD" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
+              ("READING" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY")))))
 
 ;; Capture templates for: TODO tasks, Notes, appointments, phone calls, and org-protocol
 (setq org-capture-templates
       (quote (("t" "todo" entry (file "~/CloudSpace.localized/Nutstore/Org/refile.org")
+               "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
+              ("s" "Someday/Maybe" entry (file "~/CloudSpace.localized/Nutstore/Org/refile.org")
                "* TODO %?\n%U\n%a\n" :clock-in t :clock-resume t)
               ("n" "note" entry (file "~/CloudSpace.localized/Nutstore/Org/refile.org")
                "* %? :NOTE:\n%U\n%a\n" :clock-in t :clock-resume t)
@@ -137,9 +141,9 @@
 ; global STYLE property values for completion
 (setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
                                     ("STYLE_ALL" . "habit")
-                                    ("ENERGY_ALL" . "low normal high")
-                                    ("CATEGORY_ALL" . "Mind Finance Fun Health Career Relationship Emotion Maintenance")
-                                    ("DELEGATE_ALL" . "刘启良 林昆 叶海 王鹏 雷怡静 胡中夏"))))
+                                    ("Energy_ALL" . "low normal high")
+                                    ("CATEGORY_ALL" . "工作 学习研究 阅读 娱乐 健康 家庭生活 女儿教育 个人发展 系统维护 日常事务")
+                                    ("DELEGATE_ALL" . "刘启良 林昆 叶海 王鹏 雷怡静 胡中夏 张艳"))))
 
 
 ;; Save the running clock and all clock history when exiting Emacs, load it on startup
@@ -512,6 +516,9 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
                 (org-tags-match-list-sublevels nil)))
               ("b" "Reading Books" tags-todo "/!READING"
                ((org-agenda-overriding-header "Books Being Read")
+                (org-tags-match-list-sublevels nil)))
+              ("i" "Books to Read" tags-todo "/!TOREAD"
+               ((org-agenda-overriding-header "Books To Read")
                 (org-tags-match-list-sublevels nil)))
               ("A" "Tasks to Archive" tags "-REFILE/"
                ((org-agenda-overriding-header "Tasks to Archive")
