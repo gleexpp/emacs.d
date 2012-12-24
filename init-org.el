@@ -59,7 +59,7 @@
               (done ("WAITING") ("HOLD"))
               ("TODO" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
               ("NEXT" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
-              ("DONE" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
+              ("DONE" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY") ("MIT"))
               ("TOREAD" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY"))
               ("READING" ("WAITING") ("CANCELLED") ("HOLD") ("SOMEDAY")))))
 
