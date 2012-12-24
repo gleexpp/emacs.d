@@ -68,7 +68,7 @@
 (require 'init-clojure)
 (require 'init-common-lisp)
 
-(require 'init-evernote)
+(require 'init-org-devonthink)
 
 (when *spell-check-support-enabled*
   (require 'init-spelling))
