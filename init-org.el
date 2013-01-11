@@ -45,6 +45,7 @@
               ("DONE" :foreground "forest green" :weight bold)
               ("WAITING" :foreground "orange" :weight bold)
               ("HOLD" :foreground "magenta" :weight bold)
+              ("READING" :foreground "forest green" :weight bold)
               ("CANCELLED" :foreground "forest green" :weight bold)
               ("PHONE" :foreground "forest green" :weight bold))))
 
@@ -139,7 +140,7 @@
                       ("SANWN" . ?s)))
 ; global Effort estimate values
 ; global STYLE property values for completion
-(setq org-global-properties (quote (("Effort_ALL" . "0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
+(setq org-global-properties (quote (("Effort_ALL" . "0:05 0:15 0:30 0:45 1:00 2:00 3:00 4:00 5:00 6:00 0:00")
                                     ("STYLE_ALL" . "habit")
                                     ("Energy_ALL" . "low normal high")
                                     ("CATEGORY_ALL" . "工作 学习研究 阅读 娱乐 健康 家庭生活 女儿教育 个人发展 系统维护 日常事务")
@@ -446,7 +447,7 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
                             (org-agenda-todo-ignore-with-date t)
                             (org-tags-match-list-sublevels t)
                             (org-agenda-sorting-strategy
-                             '(todo-state-down effort-up category-keep))))
+                             '(priority-down todo-state-down effort-up category-keep))))
                 (tags-todo "-REFILE-CANCELLED/!-HOLD-WAITING-TOREAD-READING-REVIEW"
                            ((org-agenda-overriding-header "Tasks")
                             (org-agenda-skip-function 'bh/skip-project-tasks-maybe)
@@ -497,7 +498,7 @@ When not restricted, skip project and sub-project tasks, habits, and project rel
                 (org-agenda-todo-ignore-with-date t)
                 (org-tags-match-list-sublevels t)
                 (org-agenda-sorting-strategy
-                 '(todo-state-down effort-up category-keep))))
+                 '(priority-down todo-state-down effort-up category-keep))))
               ("R" "Tasks" tags-todo "-REFILE-CANCELLED/!-HOLD-WAITING"
                ((org-agenda-overriding-header "Tasks")
                 (org-agenda-skip-function 'bh/skip-project-tasks-maybe)
@@ -876,6 +877,31 @@ A prefix arg forces clock in of the default task."
                          (pom
                           (org-with-point-at pom
                             (org-agenda-set-restriction-lock restriction-type))))))))
+
+;; http://thread.gmane.org/gmane.emacs.orgmode/42715/focus=42721
+(add-to-list 'org-checkbox-statistics-hook (function ndk/checkbox-list-complete))
+
+(defun ndk/checkbox-list-complete ()
+  (save-excursion
+    (org-back-to-heading t)
+    (let ((beg (point)) end)
+      (end-of-line)
+      (setq end (point))
+      (goto-char beg)
+      ;; check for the cookie: [100%] or [N/N]
+      (if (re-search-forward "\\[\\([0-9]*%\\)\\]\\|\\[\\([0-9]*\\)/\\([0-9]*\\)\\]" end t)
+            (if (match-end 1)
+                (if (equal (match-string 1) "100%")
+                    ;; all done - do the state change
+                    (org-todo 'done))
+              (if (and (> (match-end 2) (match-beginning 2))
+                       (equal (match-string 2) (match-string 3)))
+                  ;; all done - do the state change               
+                  (org-todo 'done)))))))
+
+(setq org-priority-faces '((?A . (:foreground "red" :weight bold))
+                           (?B . (:foreground "orange"))
+                           (?C . (:foreground "forest green"))))
 
 (eval-after-load 'org
   '(progn
